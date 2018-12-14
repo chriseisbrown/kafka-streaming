@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "name": "EquityPriceKey",
+  "namespace": "com.comparethemarket.kafkastreaming",
+  "fields": [
+    {
+      "name": "ticker_symbol",
+      "type": "string"
+    },
+    {
+      "name": "time_stamp",
+      "type": "string",
+      "logicalType" : "timestamp-millis"
+    }
+    ]
+}

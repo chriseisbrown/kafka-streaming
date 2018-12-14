@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "PersonKey",
+  "namespace": "com.comparethemarket.kafkastreaming",
+  "fields": [
+    {
+      "name": "customerId",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "type": "record",
+  "name": "Person",
+  "namespace": "com.comparethemarket.kafkastreaming",
+  "fields": [
+    {
+      "name": "customerId",
+      "type": "string"
+    },
+    {
+      "name": "firstName",
+      "type": ["string", "null"],
+      "default": ""
+    },
+    {
+      "name": "lastName",
+      "type": ["string", "null"],
+      "default": ""
+    }
+  ]
+}
