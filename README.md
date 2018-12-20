@@ -96,3 +96,43 @@ to be able to read events that were put on Kafka using the previous version (ver
 
 It will be good to have the stock's open price in the price event as well.  Open schema/equityPrice.avsc
 and change the json to look like this;
+
+```json
+{
+  "type": "record",
+  "name": "EquityPrice",
+  "namespace": "com.comparethemarket.kafkastreaming",
+  "fields": [
+    {
+      "name": "ticker_symbol",
+      "type": "string"
+    },
+    {
+      "name": "time_stamp",
+      "type": "string",
+      "logicalType" : "timestamp-millis"
+    },
+    {
+      "name": "close",
+      "type": "double"
+    },
+    {
+      "name": "open",
+      "type": "double"
+    }
+  ]
+}
+```
+
+If you run equity_price_loader.py again it will fail with this error message:
+```
+confluent_kafka.avro.error.ClientError: Incompatible Avro schema:409
+```
+
+This is because we are trying to add a new field for the open price but events made with
+the old schema wouldn't have been created with an 'open' field.  What we're trying to
+ do to the schema is not backwards compatible.
+
+Any code trying to use the version 2 schema to look at old events won't find the 
+'open' field.  Effectively we are about to break the contract 
+that the version 2 schema would promise if it were allowed to exist.
