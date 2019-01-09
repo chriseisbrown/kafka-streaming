@@ -8,11 +8,11 @@ SERIES_TYPE = "EOD"
 
 SCHEMA_REGISTRY_URL = 'http://localhost:8082'
 TOPIC_NAME = "equity_" + EQUITY_TICKER
-START_DATE = "2016-12-31"
+START_DATE = "2017-12-31"
 END_DATE = "2018-12-31"
 
-def main():
 
+def main():
     quandl.ApiConfig.api_key = QUANDL_API_KEY
     data = quandl.get(SERIES_TYPE + "/" + EQUITY_TICKER, start_date=START_DATE, end_date=END_DATE)
 

@@ -15,6 +15,11 @@
     {
       "name": "close",
       "type": "double"
+    },
+    {
+      "name": "open",
+      "type": ["double", "null"],
+      "default": -1.0
     }
   ]
 }

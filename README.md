@@ -1,4 +1,9 @@
-# docker-stacks
+# Stock prices onto Kafka
+Assuming Cloudera and base Kafka distibutions are installed in development directory:
+
+Mainly using the base distribution but schema registry is a Confluent product so will need 
+to have that installed.
+
 cd development/kafka-2.11/kafka_2.12-2.1.0
 
 start zookeeper:
@@ -41,7 +46,7 @@ curl -X GET http://localhost:8082/subjects/person-value/versions
 curl -X GET http://localhost:8082/subjects/person-value/versions/1
 
 ## install Quandl
-into your virtualenv.  
+... into your virtualenv.  
 ```
 pip install quandl
 ```
@@ -136,3 +141,7 @@ the old schema wouldn't have been created with an 'open' field.  What we're tryi
 Any code trying to use the version 2 schema to look at old events won't find the 
 'open' field.  Effectively we are about to break the contract 
 that the version 2 schema would promise if it were allowed to exist.
+
+## Check that price data events can be consumed from the topic
+Run equity_price_consumer.py.  This is a simple AvroConsumer that will read from the equity_DIS topic and display 
+the messages it finds in the console.
