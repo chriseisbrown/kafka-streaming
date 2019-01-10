@@ -1,5 +1,5 @@
 from bokeh.plotting import Figure
-from bokeh.models import ColumnDataSource, HoverTool, ResetTool, SaveTool
+from bokeh.models import ColumnDataSource, HoverTool, ResetTool, SaveTool, BoxZoomTool, ZoomInTool, ZoomOutTool
 from bokeh.io import curdoc
 import numpy as np
 from confluent_kafka import KafkaError
@@ -36,24 +36,25 @@ def get_data():
 
     if msg is None:
         print('no messages')
-        return
+        return msg
 
     if msg.error():
         print("AvroConsumer error: {}".format(msg.error()))
-        return
-
-    print(msg.value())
+        return msg
 
     # put messages into a pandas df here
     #prices_df["date"] = msg.value()["time_stamp"]
     #prices_df["close"] = msg.value()["close"]
     #consumer.close()
+    print(msg.value())
     return msg
 
 
 def update_data():
-    print('getting data')
+    print('getting data from topic')
     message = get_data()
+    if message is None:
+        return
     #new_data = dict(x=[prices_df["date"]], y=[prices_df["close"]])
     datetime_object = datetime.strptime(message.value()["time_stamp"], '%Y-%m-%d T%H:%M:%S')
     new_data = dict(time=[datetime_object], hover_time=[message.value()["time_stamp"]] , close=[message.value()["close"]])
@@ -66,7 +67,7 @@ hover_tool = HoverTool(tooltips=[("Date", "@hover_time"), ("Closing Price", "@cl
 fig = Figure(plot_width=800,
                     plot_height=400,
                     x_axis_type='datetime',
-                    tools=[hover_tool, ResetTool(), SaveTool()],
+                    tools=[hover_tool, ResetTool(), SaveTool(), BoxZoomTool(), ZoomInTool(), ZoomOutTool()],
                     title="Real-Time Price Plot")
 fig.line(source=source, x='time', y='close',line_width=2,alpha=.85, color='blue')
 fig.xaxis.axis_label = "Date"
