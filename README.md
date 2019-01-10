@@ -150,3 +150,18 @@ that the version 2 schema would promise if it were allowed to exist.
 ## Check that price data events can be consumed from the topic
 Run equity_price_consumer.py.  This is a simple AvroConsumer that will read from the equity_DIS topic and display 
 the messages it finds in the console.
+
+## Run the realtime plotting script
+Run the bokeh plot script bokeh_realtime_equities.py.  Make sure you have activated 
+the virtualenv that bokeh has been installed in.
+``` cd virtual_envs/py_3_6_2
+source bin/activate
+
+cd development/python/kafka-streaming
+bokeh serve bokeh_realtime_equities.py 
+```
+Open a browser at http://localhost:5006/bokeh_realtime_equities
+
+run equity_price_loader.py to load stock prices onto the Kafka
+
+

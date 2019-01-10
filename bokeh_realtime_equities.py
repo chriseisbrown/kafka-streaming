@@ -56,9 +56,7 @@ def update_data():
     print('getting data')
     message = get_data()
     #new_data = dict(x=[prices_df["date"]], y=[prices_df["close"]])
-
     datetime_object = datetime.strptime(message.value()["time_stamp"], '%Y-%m-%d T%H:%M:%S ')
-
     new_data = dict(x=[datetime_object], y=[message.value()["close"]])
     print(new_data)
     source.stream(new_data, 1000)
@@ -69,16 +67,13 @@ fig = Figure(plot_width=800,
                     plot_height=400,
                     x_axis_type='datetime',
                     title="Real-Time Price Plot")
-fig.line(source=source, x='x', y='y', line_width=2)
-fig.xaxis.axis_label = "Time"
-fig.yaxis.axis_label = "Disney Real-Time Price"
-#fig.line(source=source, x='x', y='avg', line_width=2, alpha=.85, color='blue')
-
-# prepare some data
+fig.line(source=source, x='x', y='y',line_width=2,alpha=.85, color='blue')
+fig.xaxis.axis_label = "Date"
+fig.yaxis.axis_label = "Disney Real-Time Closing Prices($)"
 
 # show the results
 curdoc().add_root(fig)
-curdoc().title = "Real-Time Price Plot from IEX"
+curdoc().title = "Real-Time Price Plotting from Quandl data"
 curdoc().add_periodic_callback(update_data, 100)
 
 
