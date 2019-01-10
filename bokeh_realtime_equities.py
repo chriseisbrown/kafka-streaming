@@ -1,5 +1,5 @@
 from bokeh.plotting import Figure
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, HoverTool, ResetTool, SaveTool
 from bokeh.io import curdoc
 import numpy as np
 from confluent_kafka import KafkaError
@@ -47,7 +47,6 @@ def get_data():
     # put messages into a pandas df here
     #prices_df["date"] = msg.value()["time_stamp"]
     #prices_df["close"] = msg.value()["close"]
-
     #consumer.close()
     return msg
 
@@ -62,10 +61,12 @@ def update_data():
     source.stream(new_data, 1000)
     return
 
+hover_tool = HoverTool(tooltips=[("Date", "@hover_time"), ("Closing Price", "@close")])
 
 fig = Figure(plot_width=800,
                     plot_height=400,
                     x_axis_type='datetime',
+                    tools=[hover_tool, ResetTool(), SaveTool()],
                     title="Real-Time Price Plot")
 fig.line(source=source, x='time', y='close',line_width=2,alpha=.85, color='blue')
 fig.xaxis.axis_label = "Date"
