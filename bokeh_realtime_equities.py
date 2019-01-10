@@ -27,13 +27,14 @@ consumer.subscribe([TOPIC_NAME])
 
 def get_data():
     try:
-        msg = consumer.poll(10)
+        msg = consumer.poll(60)
 
     except SerializerError as e:
         print("Message deserialization failed for {}: {}".format(msg, e))
         return
 
     if msg is None:
+        print('no messages')
         return
 
     if msg.error():
@@ -46,26 +47,26 @@ def get_data():
     prices_df["date"] = msg.value()["time_stamp"]
     prices_df["close"] = msg.value()["close"]
 
-    #consumer.close()
+    consumer.close()
 
 
 def update_data():
+    print('getting data')
     get_data()
     new_data = dict(x=[prices_df["date"]], y=[prices_df["close"]])
-    source.stream(new_data, 1000)
+    source.stream(new_data, 1)
 
 
-def main():
-    fig = Figure()
-    fig.line(source=source, x='x', y='y', line_width=2, alpha=.85, color='red')
-    #fig.line(source=source, x='x', y='avg', line_width=2, alpha=.85, color='blue')
 
-    # prepare some data
+fig = Figure()
+fig.line(source=source, x='x', y='y', line_width=2, alpha=.85, color='red')
+#fig.line(source=source, x='x', y='avg', line_width=2, alpha=.85, color='blue')
+
+# prepare some data
+
+# show the results
+curdoc().add_root(fig)
+curdoc().title = "Real-Time Price Plot from IEX"
+curdoc().add_periodic_callback(update_data, 1000)
 
 
-    # show the results
-    curdoc().add_root(fig)
-    curdoc().add_periodic_callback(update_data, 100)
-
-if __name__ == '__main__':
-    main()
