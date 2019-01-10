@@ -28,7 +28,7 @@ consumer.subscribe([TOPIC_NAME])
 
 def get_data():
     try:
-        msg = consumer.poll(60)
+        msg = consumer.poll(10)
 
     except SerializerError as e:
         print("Message deserialization failed for {}: {}".format(msg, e))
@@ -57,7 +57,7 @@ def update_data():
     message = get_data()
     #new_data = dict(x=[prices_df["date"]], y=[prices_df["close"]])
 
-    datetime_object = datetime.strptime(str(message.value()["time_stamp"]), '%Y-%m-%d T%H:%M:%S ')
+    datetime_object = datetime.strptime(message.value()["time_stamp"], '%Y-%m-%d T%H:%M:%S ')
 
     new_data = dict(x=[datetime_object], y=[message.value()["close"]])
     print(new_data)
@@ -67,7 +67,7 @@ def update_data():
 
 fig = Figure(plot_width=800,
                     plot_height=400,
-                    x_axis_type='auto',
+                    x_axis_type='datetime',
                     title="Real-Time Price Plot")
 fig.line(source=source, x='x', y='y', line_width=2)
 fig.xaxis.axis_label = "Time"
@@ -79,6 +79,6 @@ fig.yaxis.axis_label = "Disney Real-Time Price"
 # show the results
 curdoc().add_root(fig)
 curdoc().title = "Real-Time Price Plot from IEX"
-curdoc().add_periodic_callback(update_data, 1000)
+curdoc().add_periodic_callback(update_data, 100)
 
 
