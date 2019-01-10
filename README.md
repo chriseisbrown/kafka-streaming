@@ -165,3 +165,8 @@ Open a browser at http://localhost:5006/bokeh_realtime_equities
 run equity_price_loader.py to load stock prices onto the Kafka
 
 
+
+give props to 
+https://zduey.github.io/snippets/streaming-stock-data-with-bokeh/
+
+
