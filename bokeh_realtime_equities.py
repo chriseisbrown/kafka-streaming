@@ -5,6 +5,7 @@ import numpy as np
 from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
+from datetime import datetime
 
 from pandas import DataFrame
 
@@ -55,7 +56,10 @@ def update_data():
     print('getting data')
     message = get_data()
     #new_data = dict(x=[prices_df["date"]], y=[prices_df["close"]])
-    new_data = dict(x=[0], y=[message.value()["close"]])
+
+    datetime_object = datetime.strptime(str(message.value()["time_stamp"]), '%Y-%m-%d T%H:%M:%S ')
+
+    new_data = dict(x=[datetime_object], y=[message.value()["close"]])
     print(new_data)
     source.stream(new_data, 1000)
     return
@@ -63,9 +67,9 @@ def update_data():
 
 fig = Figure(plot_width=800,
                     plot_height=400,
-                    x_axis_type='datetime',
+                    x_axis_type='auto',
                     title="Real-Time Price Plot")
-fig.line(source=source, x='x', y='y')
+fig.line(source=source, x='x', y='y', line_width=2)
 fig.xaxis.axis_label = "Time"
 fig.yaxis.axis_label = "Disney Real-Time Price"
 #fig.line(source=source, x='x', y='avg', line_width=2, alpha=.85, color='blue')
