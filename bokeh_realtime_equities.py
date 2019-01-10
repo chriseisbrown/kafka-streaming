@@ -16,7 +16,7 @@ TOPIC_NAME = "equity_" + EQUITY_TICKER
 
 
 prices_df = DataFrame
-source = ColumnDataSource(dict(x=[], y=[]))
+source = ColumnDataSource(dict(time=[], hover_time=[], close=[]))
 
 consumer = AvroConsumer({
     'bootstrap.servers': 'localhost:9092',
@@ -57,7 +57,7 @@ def update_data():
     message = get_data()
     #new_data = dict(x=[prices_df["date"]], y=[prices_df["close"]])
     datetime_object = datetime.strptime(message.value()["time_stamp"], '%Y-%m-%d T%H:%M:%S')
-    new_data = dict(x=[datetime_object], y=[message.value()["close"]])
+    new_data = dict(time=[datetime_object], hover_time=[message.value()["time_stamp"]] , close=[message.value()["close"]])
     print(new_data)
     source.stream(new_data, 1000)
     return
@@ -67,7 +67,7 @@ fig = Figure(plot_width=800,
                     plot_height=400,
                     x_axis_type='datetime',
                     title="Real-Time Price Plot")
-fig.line(source=source, x='x', y='y',line_width=2,alpha=.85, color='blue')
+fig.line(source=source, x='time', y='close',line_width=2,alpha=.85, color='blue')
 fig.xaxis.axis_label = "Date"
 fig.yaxis.axis_label = "Disney Real-Time Closing Prices($)"
 
