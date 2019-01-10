@@ -56,7 +56,7 @@ def update_data():
     print('getting data')
     message = get_data()
     #new_data = dict(x=[prices_df["date"]], y=[prices_df["close"]])
-    datetime_object = datetime.strptime(message.value()["time_stamp"], '%Y-%m-%d T%H:%M:%S ')
+    datetime_object = datetime.strptime(message.value()["time_stamp"], '%Y-%m-%d T%H:%M:%S')
     new_data = dict(x=[datetime_object], y=[message.value()["close"]])
     print(new_data)
     source.stream(new_data, 1000)

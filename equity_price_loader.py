@@ -29,7 +29,7 @@ def main():
         default_value_schema=equity_price_schema)
 
     for index, row in data.iterrows():
-        iso_date = index.strftime('%Y-%m-%d T%H:%M:%S %Z')
+        iso_date = index.strftime('%Y-%m-%d T%H:%M:%S')
 
         equity_key = {"ticker_symbol": EQUITY_TICKER, "time_stamp" : iso_date}
         equity_value = {"ticker_symbol": EQUITY_TICKER, "time_stamp": iso_date, "close": row['Close']}
