@@ -19,7 +19,6 @@ def main():
     print(data.head(5))
     print(data.describe())
 
-
     equity_price_key_schema = avro.load('schema/EquityPriceKey.avsc')
     equity_price_schema = avro.load('schema/EquityPrice.avsc')
 
@@ -30,7 +29,7 @@ def main():
 
     for index, row in data.iterrows():
         iso_date = index.strftime('%Y-%m-%d T%H:%M:%S')
-
+        # Adj_Close,Adj_High,Adj_Low,Adj_Open,Adj_Volume,Close,Dividend,High,Low,Open,Split,Volume
         equity_key = {"ticker_symbol": EQUITY_TICKER, "time_stamp" : iso_date}
         equity_value = {"ticker_symbol": EQUITY_TICKER, "time_stamp": iso_date, "close": row['Close']}
         avroProducer.produce(topic=TOPIC_NAME, value=equity_value, key=equity_key)
