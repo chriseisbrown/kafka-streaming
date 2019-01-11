@@ -4,7 +4,7 @@ Assuming Cloudera and base Kafka distibutions are installed in development direc
 Mainly using the base distribution but schema registry is a Confluent product so will need 
 to have that installed.
 
-![]('./Kafka-Bokeh streaming - architecture.png')
+![]('architecture.png')
 
 
 cd development/kafka-2.11/kafka_2.12-2.1.0
