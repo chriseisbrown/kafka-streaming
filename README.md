@@ -4,6 +4,9 @@ Assuming Cloudera and base Kafka distibutions are installed in development direc
 Mainly using the base distribution but schema registry is a Confluent product so will need 
 to have that installed.
 
+![]('./Kafka-Bokeh streaming - architecture.png')
+
+
 cd development/kafka-2.11/kafka_2.12-2.1.0
 
 ####start zookeeper:
@@ -168,5 +171,7 @@ run equity_price_loader.py to load stock prices onto the Kafka
 
 give props to 
 https://zduey.github.io/snippets/streaming-stock-data-with-bokeh/
+https://towardsdatascience.com/stock-prediction-in-python-b66555171a2
+https://medium.com/python-data/quandl-getting-end-of-day-stock-data-with-python-8652671d6661
 
 
