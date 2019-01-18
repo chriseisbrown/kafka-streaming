@@ -1,12 +1,10 @@
 from bokeh.plotting import Figure
 from bokeh.models import ColumnDataSource, HoverTool, ResetTool, SaveTool, BoxZoomTool, ZoomInTool, ZoomOutTool
 from bokeh.io import curdoc
-import numpy as np
-from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
 from datetime import datetime
-
+import fbprophet
 from pandas import DataFrame
 
 EQUITY_TICKER = "DIS"
@@ -14,7 +12,7 @@ EQUITY_TICKER = "DIS"
 SCHEMA_REGISTRY_URL = 'http://localhost:8082'
 TOPIC_NAME = "equity_" + EQUITY_TICKER
 
-
+prices = []
 prices_df = DataFrame
 source = ColumnDataSource(dict(time=[], hover_time=[], close=[]))
 
@@ -47,7 +45,34 @@ def get_data():
     #prices_df["close"] = msg.value()["close"]
     #consumer.close()
     print(msg.value())
+    prices.append(msg.value())
     return msg
+
+
+def create_model():
+    # Make the model
+    daily_seasonality = False
+    weekly_seasonality=False
+    yearly_seasonality = True
+    monthly_seasonality = True
+    changepoint_prior_scale = 0.05
+    changepoints = None
+
+    model = fbprophet.Prophet(daily_seasonality=daily_seasonality,
+                              weekly_seasonality=weekly_seasonality,
+                              yearly_seasonality=yearly_seasonality,
+                              changepoint_prior_scale=changepoint_prior_scale,
+                              changepoints=changepoints)
+
+    if monthly_seasonality:
+        # Add monthly seasonality
+        model.add_seasonality(name='monthly', period=30.5, fourier_order=5)
+
+    return model
+
+
+def make_price_prediction():
+    create_model()
 
 
 def update_data():
@@ -55,12 +80,16 @@ def update_data():
     message = get_data()
     if message is None:
         return
-    #new_data = dict(x=[prices_df["date"]], y=[prices_df["close"]])
+
+    if len(prices) > 240:
+        predicted_data = make_price_prediction()
+
     datetime_object = datetime.strptime(message.value()["time_stamp"], '%Y-%m-%d T%H:%M:%S')
-    new_data = dict(time=[datetime_object], hover_time=[message.value()["time_stamp"]] , close=[message.value()["close"]])
-    print(new_data)
-    source.stream(new_data, 1000)
+    historic_data = dict(time=[datetime_object], hover_time=[message.value()["time_stamp"]] , close=[message.value()["close"]])
+    print(historic_data)
+    source.stream(historic_data, 1000)
     return
+
 
 hover_tool = HoverTool(tooltips=[("Date", "@hover_time"), ("Closing Price", "@close")])
 

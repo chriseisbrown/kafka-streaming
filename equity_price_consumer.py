@@ -1,7 +1,10 @@
 from confluent_kafka import KafkaError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.avro.serializer import SerializerError
+from pandas import DataFrame
 
+
+data = []
 EQUITY_TICKER = "DIS"
 
 SCHEMA_REGISTRY_URL = 'http://localhost:8082'
@@ -27,8 +30,13 @@ while True:
 
     if msg.error():
         print("AvroConsumer error: {}".format(msg.error()))
-        continue
+        break
 
     print(msg.value())
+    # collect
+    data.append(msg.value())
 
 consumer.close()
+# convert to a DataFrame
+df = DataFrame.from_dict(data)
+print(df.head(5))

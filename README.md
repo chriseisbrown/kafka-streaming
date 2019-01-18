@@ -26,11 +26,11 @@ seq 100 | bin/kafka-console-producer.sh --broker-list localhost:9092 --topic tes
 
 cd development/confluent-kafka/confluent-5.0.1
 
-####start schema registry:
+#### start schema registry:
 bin/schema-registry-start etc/schema-registry/schema-registry-dev.properties
 
 
-####start confluence-control-center:
+#### start confluence-control-center:
 bin/control-center-start etc/confluent-control-center/control-center-dev.properties
 
 open browser on localhost:9021 to see control center
@@ -53,10 +53,19 @@ curl -X GET http://localhost:8082/subjects/person-value/versions
 #### show me version 1 of the schema in the subject
 curl -X GET http://localhost:8082/subjects/person-value/versions/1
 
+## use conda
+create a conda environment because fbprophet doesn't want to play with a virtualenv
+create it in pycharm.  may need to pip install some libraries into it as conda install 
+doesn't always work
+
+
 ## install Quandl
 ... into your virtualenv.  
 ```
 pip install quandl
+pip install avro-python3
+pip install confluence-kafka
+pip install fbprophet
 ```
 
 ## load the Kafka topic with prices
@@ -157,11 +166,15 @@ the messages it finds in the console.
 ## Run the realtime plotting script
 Run the bokeh plot script bokeh_realtime_equities.py.  Make sure you have activated 
 the virtualenv that bokeh has been installed in.
-``` cd virtual_envs/py_3_6_2
+``` 
+cd virtual_envs/py_3_6_2
 source bin/activate
-
 cd development/python/kafka-streaming
-bokeh serve bokeh_realtime_equities.py 
+bokeh serve bokeh_realtime_equities.py
+
+conda activate ctm_36_fb 
+cd development/python/kafka-streaming
+bokeh serve bokeh_realtime_equities.py
 ```
 Open a browser at http://localhost:5006/bokeh_realtime_equities
 
